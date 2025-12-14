@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 08794737bc01
+Revision ID: 3cc515dcc99e
 Revises: 
-Create Date: 2025-12-14 23:27:08.832570
+Create Date: 2025-12-14 23:39:38.460781
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '08794737bc01'
+revision: str = '3cc515dcc99e'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,12 +39,6 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('book_id')
     )
     op.create_index(op.f('ix_books_book_id'), 'books', ['book_id'], unique=False)
-    op.create_table('categories',
-    sa.Column('category_id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=255), nullable=False),
-    sa.PrimaryKeyConstraint('category_id')
-    )
-    op.create_index(op.f('ix_categories_category_id'), 'categories', ['category_id'], unique=False)
     op.create_table('token_blocklist',
     sa.Column('token', sa.String(length=500), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -69,13 +63,6 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['author_id'], ['authors.author_id'], ),
     sa.ForeignKeyConstraint(['book_id'], ['books.book_id'], ),
     sa.PrimaryKeyConstraint('book_id', 'author_id')
-    )
-    op.create_table('book_categories',
-    sa.Column('book_id', sa.Integer(), nullable=False),
-    sa.Column('category_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['book_id'], ['books.book_id'], ),
-    sa.ForeignKeyConstraint(['category_id'], ['categories.category_id'], ),
-    sa.PrimaryKeyConstraint('book_id', 'category_id')
     )
     op.create_table('carts',
     sa.Column('cart_id', sa.Integer(), nullable=False),
@@ -168,13 +155,10 @@ def downgrade() -> None:
     op.drop_table('orders')
     op.drop_index(op.f('ix_carts_cart_id'), table_name='carts')
     op.drop_table('carts')
-    op.drop_table('book_categories')
     op.drop_table('book_authors')
     op.drop_index(op.f('ix_users_user_id'), table_name='users')
     op.drop_table('users')
     op.drop_table('token_blocklist')
-    op.drop_index(op.f('ix_categories_category_id'), table_name='categories')
-    op.drop_table('categories')
     op.drop_index(op.f('ix_books_book_id'), table_name='books')
     op.drop_table('books')
     op.drop_index(op.f('ix_authors_author_id'), table_name='authors')
