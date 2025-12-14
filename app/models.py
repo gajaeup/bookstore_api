@@ -19,15 +19,15 @@ class OrderStatus(str, enum.Enum):
 
 # --- 1. User & Auth ---
 class User(Base):
-    __tablename__ = "users" # [cite: 34]
+    __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True, index=True) # [cite: 35]
-    email = Column(String(255), unique=True, nullable=False) # [cite: 36]
-    password = Column(String(255), nullable=False) # [cite: 37]
-    username = Column(String(255), nullable=False) # [cite: 42]
-    role = Column(Enum(UserRole), default=UserRole.USER) # [cite: 44, 48]
-    created_at = Column(DateTime, default=func.now()) # [cite: 45]
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now()) # [cite: 46]
+    user_id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
+    username = Column(String(255), nullable=False)
+    role = Column(Enum(UserRole), default=UserRole.USER)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     deleted_at = Column(DateTime, nullable=True, default=None)
 
     # Relationships
@@ -38,54 +38,48 @@ class User(Base):
 
 # --- 2. Book & Meta ---
 class Book(Base):
-    __tablename__ = "books" # [cite: 52]
+    __tablename__ = "books"
 
-    book_id = Column(Integer, primary_key=True, index=True) # [cite: 52]
-    title = Column(String(255), nullable=False) # [cite: 197]
-    author = Column(String(255), nullable=False) # 메인 저자명 (단순 표시용) [cite: 197]
-    publisher = Column(String(255), nullable=False) # [cite: 207]
-    summary = Column(Text, nullable=True) # [cite: 193]
-    price = Column(DECIMAL(10, 2), nullable=False) # [cite: 194]
-    created_at = Column(DateTime, default=func.now()) # [cite: 194]
+    book_id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    author = Column(String(255), nullable=False) # 메인 저자명 (단순 표시용)
+    publisher = Column(String(255), nullable=False)
+    summary = Column(Text, nullable=True)
+    price = Column(DECIMAL(10, 2), nullable=False)
+    created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     # Relationships
+    # [수정] categories 관계 삭제됨
     authors = relationship("Author", secondary="book_authors", back_populates="books")
-    categories = relationship("Category", secondary="book_categories", back_populates="books")
     reviews = relationship("Review", back_populates="book")
 
 class Author(Base):
-    __tablename__ = "authors" # [cite: 199]
+    __tablename__ = "authors"
     author_id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     books = relationship("Book", secondary="book_authors", back_populates="authors")
 
-class Category(Base):
-    __tablename__ = "categories" # [cite: 233]
-    category_id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
-    books = relationship("Book", secondary="book_categories", back_populates="categories")
+# [수정] class Category 삭제됨
 
 # Association Tables (N:M)
 class BookAuthor(Base):
-    __tablename__ = "book_authors" # [cite: 201]
+    __tablename__ = "book_authors"
     book_id = Column(Integer, ForeignKey("books.book_id"), primary_key=True)
     author_id = Column(Integer, ForeignKey("authors.author_id"), primary_key=True)
 
-class BookCategory(Base):
-    __tablename__ = "book_categories" # [cite: 237]
-    book_id = Column(Integer, ForeignKey("books.book_id"), primary_key=True)
-    category_id = Column(Integer, ForeignKey("categories.category_id"), primary_key=True)
+# [수정] class BookCategory 삭제됨
+
 
 # --- 3. Review & Interaction ---
 class Review(Base):
-    __tablename__ = "reviews" # [cite: 68]
+    __tablename__ = "reviews"
 
     review_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     book_id = Column(Integer, ForeignKey("books.book_id"), nullable=False)
-    rating = Column(Integer, nullable=False) # 1~5 Check logic in code [cite: 224]
-    content = Column(Text, nullable=True) # [cite: 230]
+    rating = Column(Integer, nullable=False) # 1~5
+    content = Column(Text, nullable=True)
     likes = Column(Integer, default=0)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
@@ -94,14 +88,14 @@ class Review(Base):
     book = relationship("Book", back_populates="reviews")
 
 class ReviewLike(Base):
-    __tablename__ = "review_likes" # [cite: 258]
+    __tablename__ = "review_likes"
     review_id = Column(Integer, ForeignKey("reviews.review_id"), primary_key=True)
     user_id = Column(Integer, ForeignKey("users.user_id"), primary_key=True)
 
 
 # --- 4. Commerce & User Library ---
 class Wishlist(Base):
-    __tablename__ = "wishlists" # [cite: 288]
+    __tablename__ = "wishlists"
     wishlist_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     book_id = Column(Integer, ForeignKey("books.book_id"), nullable=False)
@@ -111,7 +105,7 @@ class Wishlist(Base):
     book = relationship("Book")
 
 class Cart(Base):
-    __tablename__ = "carts" # [cite: 291]
+    __tablename__ = "carts"
     cart_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     created_at = Column(DateTime, default=func.now())
@@ -120,22 +114,22 @@ class Cart(Base):
     items = relationship("CartItem", back_populates="cart")
 
 class CartItem(Base):
-    __tablename__ = "cart_items" # [cite: 264]
+    __tablename__ = "cart_items"
     cart_item_id = Column(Integer, primary_key=True, index=True)
     cart_id = Column(Integer, ForeignKey("carts.cart_id"), nullable=False)
     book_id = Column(Integer, ForeignKey("books.book_id"), nullable=False)
-    quantity = Column(Integer, default=1, nullable=False) # [cite: 269]
+    quantity = Column(Integer, default=1, nullable=False)
     created_at = Column(DateTime, default=func.now())
 
     cart = relationship("Cart", back_populates="items")
     book = relationship("Book")
 
 class Order(Base):
-    __tablename__ = "orders" # [cite: 297]
+    __tablename__ = "orders"
     order_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
-    total_amount = Column(DECIMAL(10, 2), nullable=False) # [cite: 300]
-    status = Column(Enum(OrderStatus), default=OrderStatus.PENDING) # [cite: 301]
+    total_amount = Column(DECIMAL(10, 2), nullable=False)
+    status = Column(Enum(OrderStatus), default=OrderStatus.PENDING)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
@@ -143,12 +137,12 @@ class Order(Base):
     items = relationship("OrderItem", back_populates="order")
 
 class OrderItem(Base):
-    __tablename__ = "order_items" # [cite: 308]
+    __tablename__ = "order_items"
     order_item_id = Column(Integer, primary_key=True, index=True)
     order_id = Column(Integer, ForeignKey("orders.order_id"), nullable=False)
     book_id = Column(Integer, ForeignKey("books.book_id"), nullable=False)
-    quantity = Column(Integer, nullable=False) # [cite: 313]
-    price = Column(DECIMAL(10, 2), nullable=False) # [cite: 314]
+    quantity = Column(Integer, nullable=False)
+    price = Column(DECIMAL(10, 2), nullable=False)
 
     order = relationship("Order", back_populates="items")
     book = relationship("Book")
@@ -156,5 +150,5 @@ class OrderItem(Base):
 class TokenBlocklist(Base):
     __tablename__ = "token_blocklist"
     
-    token = Column(String(500), primary_key=True) # 토큰 자체가 ID
+    token = Column(String(500), primary_key=True)
     created_at = Column(DateTime, default=func.now())
