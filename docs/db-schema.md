@@ -36,14 +36,50 @@
 | `content`   | TEXT         | 리뷰 내용  |
 | `likes`     | INTEGER      | 좋아요 수  |
 
-### **4. Commerce (주문/장바구니)**
+### **4. Carts (장바구니)**
 
-| 테이블         | 설명               | 주요 컬럼                                 |
-| -------------- | ------------------ | ----------------------------------------- |
-| **Carts**      | 장바구니           | `cart_id`, `user_id`                      |
-| **CartItems**  | 장바구니 상세 품목 | `book_id`, `quantity`                     |
-| **Orders**     | 주문 정보          | `total_amount`, `status` (PAID/CANCELLED) |
-| **OrderItems** | 주문 상세 품목     | `price` (구매 당시 가격), `quantity`      |
+### **Carts**
+
+사용자의 장바구니(바구니 자체)입니다.
+| 컬럼명 | 타입 | 설명 |
+| :--- | :--- | :--- |
+| `cart_id` | INTEGER (PK) | 장바구니 ID |
+| `user_id` | INTEGER (FK) | 소유자 ID |
+| `created_at` | DATETIME | 생성 일시 |
+
+### **CartItems**
+
+장바구니에 담긴 개별 상품들입니다.
+| 컬럼명 | 타입 | 설명 |
+| :--- | :--- | :--- |
+| `cart_item_id` | INTEGER (PK) | 장바구니 아이템 ID |
+| `cart_id` | INTEGER (FK) | 장바구니 ID |
+| `book_id` | INTEGER (FK) | 담은 도서 ID |
+| `quantity` | INTEGER | 수량 (Default: 1) |
+
+### **Orders**
+
+사용자의 주문 내역입니다.
+| 컬럼명 | 타입 | 설명 |
+| :--- | :--- | :--- |
+| `order_id` | INTEGER (PK) | 주문 고유 ID |
+| `user_id` | INTEGER (FK) | 주문자 ID |
+| `total_amount` | DECIMAL(10,2) | 총 결제 금액 |
+| `status` | ENUM | 상태 ('PENDING', 'PAID', 'SHIPPED', 'CANCELLED') |
+| `created_at` | DATETIME | 주문 일시 |
+
+### **OrderItems**
+
+주문 상품의 상세 정보입니다.
+| 컬럼명 | 타입 | 설명 |
+| :--- | :--- | :--- |
+| `order_item_id` | INTEGER (PK) | 주문 상세 ID |
+| `order_id` | INTEGER (FK) | 상위 주문 ID |
+| `book_id` | INTEGER (FK) | 도서 ID |
+| `quantity` | INTEGER | 주문 수량 |
+| `price` | DECIMAL(10,2) | 도서 가격|
+
+---
 
 ### **5. Wishlist (위시리스트)**
 
@@ -52,3 +88,4 @@
 | `wishlist_id` | INTEGER (PK) | 위시리스트 ID |
 | `user_id`     | INTEGER (FK) | 사용자 ID     |
 | `book_id`     | INTEGER (FK) | 도서 ID       |
+| `created_at`  | DATETIME     | 찜한 날짜     |

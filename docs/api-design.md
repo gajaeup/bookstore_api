@@ -66,9 +66,9 @@
 
 | Method | URI                   | 설명            |
 | ------ | --------------------- | --------------- |
-| POST   | `/api/favorites`      | 위시리스트 추가 |
-| GET    | `/api/favorites`      | 위시리스트 조회 |
-| DELETE | `/api/favorites/{id}` | 위시리스트 삭제 |
+| POST   | `/api/wishlists`      | 위시리스트 추가 |
+| GET    | `/api/wishlists`      | 위시리스트 조회 |
+| DELETE | `/api/wishlists/{id}` | 위시리스트 삭제 |
 
 ### 📊 통계 (Stats) - `stats.py`
 

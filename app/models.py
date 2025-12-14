@@ -92,33 +92,12 @@ class Review(Base):
 
     user = relationship("User", back_populates="reviews")
     book = relationship("Book", back_populates="reviews")
-    comments = relationship("Comment", back_populates="review")
 
 class ReviewLike(Base):
     __tablename__ = "review_likes" # [cite: 258]
     review_id = Column(Integer, ForeignKey("reviews.review_id"), primary_key=True)
     user_id = Column(Integer, ForeignKey("users.user_id"), primary_key=True)
 
-class Comment(Base):
-    __tablename__ = "comments" # [cite: 215]
-
-    comment_id = Column(Integer, primary_key=True, index=True)
-    review_id = Column(Integer, ForeignKey("reviews.review_id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
-    username = Column(String(255), nullable=False) # 스냅샷용 [cite: 231]
-    parent_id = Column(Integer, ForeignKey("comments.comment_id"), nullable=True) # 대댓글 [cite: 243]
-    content = Column(Text, nullable=False)
-    likes = Column(Integer, default=0)
-    created_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-
-    review = relationship("Review", back_populates="comments")
-    replies = relationship("Comment", remote_side=[comment_id]) # Self-referential
-
-class CommentLike(Base):
-    __tablename__ = "comment_likes" # [cite: 262]
-    comment_id = Column(Integer, ForeignKey("comments.comment_id"), primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.user_id"), primary_key=True)
 
 # --- 4. Commerce & User Library ---
 class Wishlist(Base):
