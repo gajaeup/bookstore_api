@@ -5,8 +5,15 @@ from app.models import Review, User, Book
 from app.schemas import APIResponse, ReviewCreate, ReviewDto, ReviewListResponse, ReviewUpdate
 from app.dependencies import get_current_user
 from pydantic import BaseModel
+from typing import Optional, Dict, Any
+from pydantic import Field
 class ErrorResponse(BaseModel):
-    detail: str
+    timestamp: str = Field(..., example="2025-12-14T12:00:00Z")
+    path: str = Field(..., example="/api/request/url")
+    status: int = Field(..., example=400)
+    code: str = Field(..., example="ERROR_CODE_EXAMPLE")
+    message: str = Field(..., example="에러 메시지가 여기에 나옵니다.")
+    details: Optional[Dict[str, Any]] = Field(None, example={"field": "error_detail"})
 
 common_responses = {
     400: {"model": ErrorResponse, "description": "잘못된 요청"},
