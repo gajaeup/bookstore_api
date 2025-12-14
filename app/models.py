@@ -16,9 +16,6 @@ class OrderStatus(str, enum.Enum):
     SHIPPED = "SHIPPED"
     CANCELLED = "CANCELLED"
 
-class LibraryStatus(str, enum.Enum):
-    READING = "reading"
-    READ = "read"
 
 # --- 1. User & Auth ---
 class User(Base):
@@ -37,7 +34,6 @@ class User(Base):
     reviews = relationship("Review", back_populates="user")
     cart = relationship("Cart", uselist=False, back_populates="user")
     orders = relationship("Order", back_populates="user")
-    library_books = relationship("Library", back_populates="user")
     wishlist = relationship("Wishlist", back_populates="user")
 
 # --- 2. Book & Meta ---
@@ -153,18 +149,6 @@ class CartItem(Base):
     created_at = Column(DateTime, default=func.now())
 
     cart = relationship("Cart", back_populates="items")
-    book = relationship("Book")
-
-class Library(Base):
-    __tablename__ = "libraries" # [cite: 275]
-    library_id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
-    book_id = Column(Integer, ForeignKey("books.book_id"), nullable=False)
-    status = Column(Enum(LibraryStatus), default=LibraryStatus.READING) # [cite: 279]
-    created_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-
-    user = relationship("User", back_populates="library_books")
     book = relationship("Book")
 
 class Order(Base):
