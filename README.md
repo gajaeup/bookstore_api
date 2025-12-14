@@ -22,23 +22,9 @@
 Python 3.12 환경에서 아래 명령어를 순서대로 실행하세요.
 
 ```bash
-# 1. 저장소 복제 및 이동
-git clone [https://github.com/gajaeup/bookstore.git](https://github.com/gajaeup/bookstore.git)
-cd bookstore
-
-# 2. 가상환경 생성 및 활성화
-python -m venv venv
-source venv/bin/activate  # (Windows: venv\Scripts\activate)
-
-# 3. 의존성 패키지 설치
 pip install -r requirements.txt
-
-# 4. 데이터베이스 초기화 (마이그레이션 및 시드 데이터)
-# (.env 파일이 설정되어 있어야 합니다)
-python seed_data.py
-
-# 5. 서버 실행
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+alembic upgrade head && python seed_data.py
+uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
 ---
@@ -52,7 +38,6 @@ DATABASE_URL=mysql+pymysql://root:YOUR_PASSWORD@localhost:3306/bookstore
 # Security
 SECRET_KEY=YOUR_SECRET_KEY
 ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 
 ---
@@ -143,7 +128,5 @@ FK 관계 최적화: SQLAlchemy relationship을 효율적으로 설정하여 N+1
 ---
 
 ## 10. 한계와 개선 계획
-
-비동기 DB 처리: 현재 pymysql(동기) 드라이버를 사용 중이나, 향후 aiomysql로 전환하여 async/await 성능을 극대화할 계획입니다.
 
 캐싱 도입: 베스트셀러나 인기 리뷰 조회 성능 향상을 위해 Redis 캐싱 도입을 고려 중입니다.
