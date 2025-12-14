@@ -238,7 +238,7 @@ def health_check(db: Session = Depends(get_db)):
         "db_status": db_status,  # DB 상태 추가
         "version": "1.0.0",
         "build_timestamp": datetime.now().isoformat(),
-        "maintainer": "Your Name"
+        "maintainer": "김지애"
     }
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
