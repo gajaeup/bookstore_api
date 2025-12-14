@@ -4,24 +4,7 @@ from app.database import get_db
 from app.models import Cart, CartItem, Book, User
 from app.schemas import APIResponse, CartItemCreate, CartItemDto, CartListResponse, CartItemUpdate
 from app.dependencies import get_current_user
-from pydantic import BaseModel
-from typing import Optional, Dict, Any
-from pydantic import Field
-class ErrorResponse(BaseModel):
-    timestamp: str = Field(..., example="2025-12-14T12:00:00Z")
-    path: str = Field(..., example="/api/request/url")
-    status: int = Field(..., example=400)
-    code: str = Field(..., example="ERROR_CODE_EXAMPLE")
-    message: str = Field(..., example="에러 메시지가 여기에 나옵니다.")
-    details: Optional[Dict[str, Any]] = Field(None, example={"field": "error_detail"})
-common_responses = {
-    400: {"model": ErrorResponse, "description": "잘못된 요청"},
-    401: {"model": ErrorResponse, "description": "인증 실패"},
-    403: {"model": ErrorResponse, "description": "권한 없음"},
-    404: {"model": ErrorResponse, "description": "찾을 수 없음"},
-    500: {"model": ErrorResponse, "description": "서버 오류"},
-}
-router = APIRouter(responses=common_responses)
+router = APIRouter()
 
 # 1. 장바구니에 담기
 @router.post("/api/carts/items", response_model=APIResponse)
