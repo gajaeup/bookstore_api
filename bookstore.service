@@ -1,0 +1,13 @@
+[Unit]
+Description=Bookstore API Server
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/bookstore
+ExecStart=/home/ubuntu/bookstore/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
