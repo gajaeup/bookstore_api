@@ -6,12 +6,15 @@ from app.schemas import APIResponse
 from app.dependencies import get_current_user
 from app.exceptions import CustomException
 from app.error_codes import ErrorCode
+from pydantic import BaseModel
+class ErrorResponse(BaseModel):
+    detail: str
 common_responses = {
-    400: {"description": "잘못된 요청 (Bad Request)"},
-    401: {"description": "인증 실패 (Unauthorized)"},
-    403: {"description": "권한 없음 (Forbidden)"},
-    404: {"description": "리소스를 찾을 수 없음 (Not Found)"},
-    500: {"description": "서버 내부 오류 (Internal Server Error)"},
+    400: {"model": ErrorResponse, "description": "잘못된 요청"},
+    401: {"model": ErrorResponse, "description": "인증 실패"},
+    403: {"model": ErrorResponse, "description": "권한 없음"},
+    404: {"model": ErrorResponse, "description": "찾을 수 없음"},
+    500: {"model": ErrorResponse, "description": "서버 오류"},
 }
 router = APIRouter(responses=common_responses)
 
