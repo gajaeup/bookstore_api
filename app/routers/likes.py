@@ -6,7 +6,14 @@ from app.schemas import APIResponse
 from app.dependencies import get_current_user
 from app.exceptions import CustomException
 from app.error_codes import ErrorCode
-router = APIRouter()
+common_responses = {
+    400: {"description": "잘못된 요청 (Bad Request)"},
+    401: {"description": "인증 실패 (Unauthorized)"},
+    403: {"description": "권한 없음 (Forbidden)"},
+    404: {"description": "리소스를 찾을 수 없음 (Not Found)"},
+    500: {"description": "서버 내부 오류 (Internal Server Error)"},
+}
+router = APIRouter(responses=common_responses)
 
 @router.post("/api/reviews/{review_id}/like", response_model=APIResponse)
 def like_review(

@@ -8,7 +8,14 @@ from app.dependencies import get_current_user
 import math
 from app.schemas import BookCreate
 
-router = APIRouter()
+common_responses = {
+    400: {"description": "잘못된 요청 (Bad Request)"},
+    401: {"description": "인증 실패 (Unauthorized)"},
+    403: {"description": "권한 없음 (Forbidden)"},
+    404: {"description": "리소스를 찾을 수 없음 (Not Found)"},
+    500: {"description": "서버 내부 오류 (Internal Server Error)"},
+}
+router = APIRouter(responses=common_responses)
 
 # 1. 도서 등록 (관리자 전용) [cite: 487]
 @router.post("/api/admin/books", response_model=APIResponse)
