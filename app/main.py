@@ -28,7 +28,7 @@ class ErrorResponse(BaseModel):
     message: str = Field(..., example="에러 메시지")
     details: Optional[Dict[str, Any]] = Field(None, example={})
 
-# 2. 대표 에러코드 10종 상세 정의 (★ 내용물까지 완벽하게!)
+
 global_responses = {
     400: {
         "model": ErrorResponse,
@@ -216,6 +216,13 @@ app.include_router(orders.router, tags=["Orders (주문)"])
 app.include_router(wishlists.router, tags=["Wishlists (위시리스트)"])
 app.include_router(likes.router, tags=["Likes (좋아요)"])
 app.include_router(stats.router, tags=["Stats (통계)"])
+@app.get("/")
+def read_root():
+    return {
+        "message": "Welcome to Bookstore API",
+        "version": "1.0.0",
+        "status": "Healthy"  # <-- 이게 보이면 서버가 건강하다는 뜻!
+    }
 
 @app.get("/health", tags=["System"])
 def health_check(db: Session = Depends(get_db)):
